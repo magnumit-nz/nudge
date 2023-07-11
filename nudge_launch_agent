@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Determine Current User
+currentUser=$( scutil <<< "show State:/Users/ConsoleUser" | awk '/Name :/ && ! /loginwindow/ { print $3 }' )
+
+# Determine Current User ID
+currentUserUID=`id -u "$currentUser"`
+
+#Remove Nudge Installed LaunchAgent
+rm /Library/LaunchAgents/com.github.macadmins.Nudge.plist
+
+# Verifies Presence of Nudge Launch Agent
+if [[ -f /Users/$currentUser/Library/LaunchAgents/com.github.macadmins.Nudge.plist ]]; then 
+	echo "Nudge launch agent is present"
+	/bin/launchctl asuser "$currentUserUID" launchctl unload /Users/$currentUser/Library/LaunchAgents/com.github.macadmins.Nudge.plist
+	rm -Rf /Users/$currentUser/Library/LaunchAgents/com.github.macadmins.Nudge.plist
+elif [[ ! -f /Users/$currentUser/Library/LaunchAgents/com.github.macadmins.Nudge.plist ]]; then
+	echo "Nudge launch agent is not present."
+fi
+
+mkdir "/Users/$currentUser/Library/LaunchAgents/"
+
+# Generate Nudge launch agent
+echo "<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.github.macadmins.Nudge</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/Applications/Utilities/Nudge.app/Contents/MacOS/Nudge</string>
+	</array>
+		<key>RunAtLoad</key>
+			<true/>
+	<key>StartInterval</key>
+		<integer>3600</integer>
+</dict>
+</plist>" > /Users/$currentUser/Library/LaunchAgents/com.github.macadmins.Nudge.plist
+
+# Load Launch Agent
+/bin/launchctl asuser "$currentUserUID" launchctl load /Users/$currentUser/Library/LaunchAgents/com.github.macadmins.Nudge.plist
+
+exit 0		## Success
+exit 1		## Failure
