@@ -22,16 +22,23 @@
     }
   ],
   "userExperience": {
-    "allowedDeferrals": 100,
-    "allowedDeferralsUntilForcedSecondaryQuitButton": 50,
+    "allowUserQuitDeferrals": true,
+    "allowedDeferrals": 1000000,
+    "allowedDeferralsUntilForcedSecondaryQuitButton": 14,
     "approachingRefreshCycle": 6000,
-    "approachingWindowTime": 120,
+    "approachingWindowTime": 72,
     "elapsedRefreshCycle": 300,
+    "imminentRefreshCycle": 600,
+    "imminentWindowTime": 24,
     "initialRefreshCycle": 18000,
     "maxRandomDelayInSeconds": 1200,
     "noTimers": false,
     "nudgeRefreshCycle": 60,
-    "randomDelay": false
+    "randomDelay": false,
+    "allowGracePeriods": true,
+    "gracePeriodInstallDelay": 4,
+    "gracePeriodLaunchDelay": 1,
+    "gracePeriodPath": "/private/var/db/.AppleSetupDone"
   },
   "userInterface": {
     "fallbackLanguage": "en",
